@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+
+#ifdef CONFIG_HAS_BFD
 #include <bfd.h>
 
 static bfd *abfd;
@@ -131,3 +133,4 @@ int symbol_exit(struct kvm *kvm)
 	return -EFAULT;
 }
 late_exit(symbol_exit);
+#endif

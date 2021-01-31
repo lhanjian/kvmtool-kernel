@@ -6,6 +6,8 @@
 #include "kvm/vesa.h"
 #include "kvm/kvm.h"
 
+#ifdef CONFIG_HAS_GTK3
+
 #include <gtk/gtk.h>
 #include <pthread.h>
 #include <linux/err.h>
@@ -324,3 +326,4 @@ int kvm_gtk_exit(struct kvm *kvm)
 
 dev_init(kvm_gtk_init);
 dev_exit(kvm_gtk_exit);
+#endif 

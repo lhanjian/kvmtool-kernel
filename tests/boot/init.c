@@ -1,5 +1,7 @@
+#include <sys/reboot.h>
 #include <linux/reboot.h>
 #include <unistd.h>
+#include <stdio.h>
 
 int main(int argc, char *argv[])
 {
