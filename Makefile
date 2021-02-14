@@ -10,11 +10,10 @@ INC_DIRS := $(shell find $(SRC_DIRS) -name "*include" -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 CONFIG_DEFINE := -DCONFIG_HAS_SDL -DCONFIG_HAS_VNCSERVER -DCONFIG_HAS_AIO -DCONFIG_X86_64 
-BUILD_DEFINE := -D_GNU_SOURCE -DBUILD_ARCH=\"x86\" -D_FILE_OFFSET_BITS=64
+BUILD_DEFINE := -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
 BUILD_OPTION := -Wall -std=gnu99 -fno-strict-aliasing -fverbose-asm -O2
-LIBS := -lSDL -lvncserver -laio -lutil -lbfd -lpthread
-export CFLAGS := $(INC_FLAGS) $(BUILD_DEFINE) $(CONFIG_DEFINE) $(LIBS) $(BUILD_OPTION)
-
+LIBS := -lSDL -lvncserver -laio -lutil -pthread -L/usr/lib/x86_64-linux-gnu
+export CFLAGS := $(INC_FLAGS) $(BUILD_DEFINE) $(CONFIG_DEFINE) $(BUILD_OPTION)
 
 BIOS_CFLAGS := -m32 -march=i386 -mregparm=3 -fno-stack-protector -fno-pic
 
@@ -39,10 +38,10 @@ build/x86/bios:
 
 
 $(BUILD_DIR)/$(TARGET_EXEC): build/x86/bios $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) build/x86/bios/bios-rom.o -o $@
+	$(CC) $(CFLAGS) -o $@ $(OBJS) build/x86/bios/bios-rom.o $(LIBS)
 
 $(BUILD_DIR)/%.c.o: %.c
-	mkdir -p $(dir $@) && $(CC) $(CFLAGS) -c $< -o $@
+	mkdir -p $(dir $@) && $(CC) -DBUILD_ARCH=\"x86\" $(CFLAGS) -c $< -o $@
 
 .PHONY: clean build/x86/bios $(BUILD_DIR)/$(TARGET_EXEC) default
 
