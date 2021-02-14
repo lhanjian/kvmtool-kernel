@@ -1,4 +1,4 @@
-Native Linux KVM tool
+How to Use Native Linux KVM tool
 =====================
 
 kvmtool is a lightweight tool for hosting KVM guests. As a pure virtualization
@@ -27,16 +27,34 @@ This is the stand-alone version which does not live inside a Linux
 kernel tree.
 1. To check it out, clone the main git repository:
 
-  git clone git://git.kernel.org/pub/scm/linux/kernel/git/will/kvmtool.git
+  git clone https://github.com/lhanjian/kvmtool-kernel.git
 
 2. Compile the tool (for more elaborate instructions see INSTALL):
 
   cd kvmtool && make
 
-3. Download a raw userspace image:
+3. Download and Load kernel image / initrd / rootfs
 
-  wget http://wiki.qemu.org/download/linux-0.2.img.bz2 && bunzip2
-linux-0.2.img.bz2
+  wget https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-root.tar.xz
+  wget https://cloud-images.ubuntu.com/xenial/current/unpacked/xenial-server-cloudimg-amd64-initrd-generic
+  wget https://cloud-images.ubuntu.com/xenial/current/unpacked/xenial-server-cloudimg-amd64-vmlinuz-generic
+  
+  mkdir -p rootfsfile && tar -xvf xenial-server-cloudimg-amd64-root.tar -C rootfsfile
+  sudo cp /etc/shadow ./rootfsfile/etc/
+  cp /etc/passwd ./rootfsfile/etc/
+  
+  dd if=/dev/zero of=rootfs_ext4.raw bs=1024M count=50 //Creat Image
+  sudo losetup /dev/loop5 rootfs_ext4.raw
+  sudo mkfs.ext4 -m 0 /dev/loop5
+  sudo mkdir -p image_fs
+  sudo mount -t ext4 /dev/loop5 ./image_fs/
+  sudo cp -r ./rootfsfile/* ./image_fs/
+  sudo umount /dev/loop5
+  sudo losetup -d /dev/loop5
+
+  ./build/kvmtool --kernel xenial-server-cloudimg-amd64-vmlinuz-generic \
+                  --initrd xenial-server-cloudimg-amd64-initrd-generic \
+                  --disk rootfs_ext4
 
 4. The guest kernel has to be built with the following configuration:
 
