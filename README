@@ -1,5 +1,6 @@
 How to Use Native Linux KVM tool
 =====================
+README on this gitrepo is modified by lhanjian <lhjay1@gmail.com>
 
 kvmtool is a lightweight tool for hosting KVM guests. As a pure virtualization
 tool it only supports guests using the same architecture, though it supports
@@ -35,15 +36,16 @@ kernel tree.
 
 3. Download and Load kernel image / initrd / rootfs
 
-  wget https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-root.tar.xz
-  wget https://cloud-images.ubuntu.com/xenial/current/unpacked/xenial-server-cloudimg-amd64-initrd-generic
-  wget https://cloud-images.ubuntu.com/xenial/current/unpacked/xenial-server-cloudimg-amd64-vmlinuz-generic
+  wget https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-root.tar.xz
+  wget https://cloud-images.ubuntu.com/focal/current/unpacked/focal-server-cloudimg-amd64-initrd-generic
+  wget https://cloud-images.ubuntu.com/focal/current/unpacked/focal-server-cloudimg-amd64-vmlinuz-generic
   
+  unlz4 focal-server-cloudimg-amd64-intrd-generic focal-server-cloudimg-amd64-initrd
   mkdir -p rootfsfile && tar -xvf xenial-server-cloudimg-amd64-root.tar -C rootfsfile
   sudo cp /etc/shadow ./rootfsfile/etc/
   cp /etc/passwd ./rootfsfile/etc/
   
-  dd if=/dev/zero of=rootfs_ext4.raw bs=1024M count=50 //Creat Image
+  dd if=/dev/zero of=rootfs_ext4.raw bs=1024M count=50
   sudo losetup /dev/loop5 rootfs_ext4.raw
   sudo mkfs.ext4 -m 0 /dev/loop5
   sudo mkdir -p image_fs
@@ -52,9 +54,9 @@ kernel tree.
   sudo umount /dev/loop5
   sudo losetup -d /dev/loop5
 
-  ./build/kvmtool --kernel xenial-server-cloudimg-amd64-vmlinuz-generic \
-                  --initrd xenial-server-cloudimg-amd64-initrd-generic \
-                  --disk rootfs_ext4
+  ./build/kvmtool run --kernel focal-server-cloudimg-amd64-vmlinuz-generic \
+                  --initrd focal-server-cloudimg-amd64-initrd \
+                  --disk ./rootfs_ext4.raw
 
 4. The guest kernel has to be built with the following configuration:
 
@@ -96,16 +98,6 @@ kernel tree.
 	CONFIG_FB_VESA=y
 
 
-5. And finally, launch the hypervisor:
-
-  ./lkvm run --disk linux-0.2.img \
-	    --kernel ../../arch/x86/boot/bzImage \
-or
-
-  sudo ./lkvm run --disk linux-0.2.img \
-		 --kernel ../../arch/x86/boot/bzImage \
-		 --network virtio
-
 The tool has been written by Pekka Enberg, Cyrill Gorcunov, Asias He,
 Sasha Levin and Prasad Joshi. Special thanks to Avi Kivity for his help
 on KVM internals and Ingo Molnar for all-around support and encouragement!
@@ -135,3 +127,5 @@ Maintainers
 
 kvmtool is maintained by Will Deacon <will@kernel.org> and Julien Thierry
 <julien.thierry.kdev@gmail.com>.
+
+

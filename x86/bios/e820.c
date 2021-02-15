@@ -24,8 +24,7 @@ static inline u8 rdfs8(unsigned long addr)
 {
 	u8 v;
 
-	//asm volatile("addr32 movb %%fs:%1,%0" : "=q" (v) : "m" (*(u8 *)addr));
-	asm volatile("movb %%fs:%1,%0" : "=q" (v) : "m" (*(u8 *)addr));
+	asm volatile("addr32 movb %%fs:%1,%0" : "=q" (v) : "m" (*(u8 *)addr));
 
 	return v;
 }
@@ -34,8 +33,7 @@ static inline u32 rdfs32(unsigned long addr)
 {
 	u32 v;
 
-	//asm volatile("addr32 movl %%fs:%1,%0" : "=q" (v) : "m" (*(u32 *)addr));
-	asm volatile("movl %%fs:%1,%0" : "=q" (v) : "m" (*(u32 *)addr));
+	asm volatile("addr32 movl %%fs:%1,%0" : "=q" (v) : "m" (*(u32 *)addr));
 
 	return v;
 }

@@ -22,10 +22,10 @@ all: build/x86/bios $(BUILD_DIR)/$(TARGET_EXEC)
 build/x86/bios:
 	mkdir -p $(BUILD_DIR)/x86/bios/ && cp -r x86/bios $(BUILD_DIR)/x86/
 	cd $(BUILD_DIR)/x86/bios && \
-	$(CC) $(CFLAGS) $(BIOS_CFLAGS) -c memcpy.c -o memcpy.o && \
-	$(CC) $(CFLAGS) $(BIOS_CFLAGS) -c e820.c   -o e820.o && \
-	$(CC) $(CFLAGS) $(BIOS_CFLAGS) -c int10.c  -o int10.o && \
-	$(CC) $(CFLAGS) $(BIOS_CFLAGS) -c int15.c  -o int15.o && \
+	$(CC) -include code16gcc.h $(CFLAGS) $(BIOS_CFLAGS) -c memcpy.c -o memcpy.o && \
+	$(CC) -include code16gcc.h $(CFLAGS) $(BIOS_CFLAGS) -c e820.c   -o e820.o && \
+	$(CC) -include code16gcc.h $(CFLAGS) $(BIOS_CFLAGS) -c int10.c  -o int10.o && \
+	$(CC) -include code16gcc.h $(CFLAGS) $(BIOS_CFLAGS) -c int15.c  -o int15.o && \
 	$(CC) $(CFLAGS) $(BIOS_CFLAGS) -c entry.S  -o entry.o && \
 	$(LD) -T rom.ld.S -o bios.bin.elf memcpy.o entry.o e820.o int10.o int15.o && \
 	objcopy -O binary -j .text  bios.bin.elf bios.bin && \
